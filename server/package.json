@@ -1,0 +1,15 @@
+{
+  "name": "mock-data",
+  "version": "1.0.0",
+  "description": "数据模拟工具-服务端",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mock"
+  ],
+  "author": "SkyCai",
+  "license": "ISC"
+}
