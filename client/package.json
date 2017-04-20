@@ -1,8 +1,11 @@
 {
-  "name": "mock-data",
+  "name": "mock-data-client",
   "version": "1.0.0",
   "description": "数据模拟工具-客户端",
   "main": "index.js",
+  "bin": {
+    "mock": "./bin/mock.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,5 +13,8 @@
     "mock"
   ],
   "author": "SkyCai",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.9.0"
+  }
 }

@@ -4,8 +4,10 @@ const http = require('http');
 const fs = require('fs');
 const url = require('url');
 const path = require('path');
+const querystring = require('querystring');
 
-const config = require('../config/config');
+const FS = require('./libs/fs');
+const {port, dataPath} = require('./config/config');
 
 /**
  * init data path , if the path don't exists then create it
@@ -19,7 +21,7 @@ function initDataPath(dataPath) {
     }    
 }
 
-initDataPath(config.dataPath);
+// initDataPath(config.dataPath);
 
 /**
  * read the file content if dataPath exists, else return empty object string
@@ -55,18 +57,31 @@ const app = http.createServer((req, res) => {
         res.end();
     }
 
-    if (['GET', 'POST'].indexOf(reqMethod) > -1 && isJson) {
-        const result = getData(reqUrl.path);
+    if (reqUrl.path === '/upload') {
+        let _data ='';
+        req.addListener('data', chunk => {  
+            _data += chunk;  
+        }).addListener('end', () => {
+            FS.create(req.headers.filepath, _data, req.headers.force).then((_res, err) => {
+                res.end(JSON.stringify(_res));
+            });            
+        });      
+    } else if (['GET', 'POST'].indexOf(reqMethod) > -1 && isJson) {
+        const result = FS.read(reqUrl.path);
 
         res.writeHead(200, {
-            'Content-Type': 'application/json; charset=utf-8'
+            'Content-Type': 'application/json; charset=utf-8',
+            "Content-Length": Buffer.byteLength(result, 'utf8')
         });
         res.end(result);
-    }
-
-    res.end();
+    } else {
+        res.end(JSON.stringify({
+            success: false,
+            errorMsg: "not found"
+        }));
+    }    
 });
 
-app.listen(config.port, () => {
-    console.info('Server is listening at port: %s', config.port);
+app.listen(port, () => {
+    console.info('Server is listening at port: %s', port);
 });
